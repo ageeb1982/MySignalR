@@ -1,0 +1,67 @@
+﻿<div class="container col-6">
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        <div class="col-6">
+            User..........<input type="text" value="Abdulla" id="userInput" />
+            <br />
+            Message...<input type="text" id="msgInput" value="السلام عليكم" />
+            <input type="button" id="sendButton" value="Send Message" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        <div class="col-6">
+            <ul id="msgList"></ul>
+        </div>
+    </div>
+</div>
+
+
+<div class="container col-6">
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        <div class="col-6">
+            Group..........<input type="text" value="GroupA" id="grpInput" />
+            <input type="button" id="btnjoinGroup" value="join Group" />
+            <br />
+            <br />
+            User..........<input type="text" value="ageeb" id="grpuserInput" />
+            <br />
+            Message...<input type="text" value="السلام عليكم " id="grpmsgInput" />
+
+            <input type="button" id="grpSendButton" value="Send Message" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        <div class="col-6">
+            <ul id="grpMsgList"></ul>
+        </div>
+    </div>
+</div>
+<div class="container col-6">
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        <div class="col-6">
+            <ul id="OnlineList"></ul>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/chat_WithProxy.js"></script>
