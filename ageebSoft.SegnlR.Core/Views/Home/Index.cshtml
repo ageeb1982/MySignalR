@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-6">&nbsp;</div>
         <div class="col-6">
-            User..........<input type="text" value="Abdulla" id="userInput" />
+            User..........<b class="userName"></b>
             <br />
             Message...<input type="text" id="msgInput" value="السلام عليكم" />
             <input type="button" id="sendButton" value="Send Message" />
@@ -32,7 +32,7 @@
             <input type="button" id="btnjoinGroup" value="join Group" />
             <br />
             <br />
-            User..........<input type="text" value="ageeb" id="grpuserInput" />
+            User..........<b class="userName"></b>
             <br />
             Message...<input type="text" value="السلام عليكم " id="grpmsgInput" />
 
@@ -65,4 +65,10 @@
 <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/js/chatX.js"></script>
- 
+ <script>
+     $(() => {
+         var userNameX = getQueryStringByName("user");
+         $(".userName").text(userNameX);
+     });
+
+ </script>

@@ -6,24 +6,45 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ageebSoft.SignlR.Core.Models;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Hosting;
+ using System.Threading;
 
 namespace ageebSoft.SignlR.Core.Controllers
 {
     public class HomeController : Controller
     {
 
-        private readonly IHubContext<MyHub> myhub;
+        private readonly IHubContext<MyHub> Imyhub;
+        
+ 
 
-        public HomeController(IHubContext<MyHub> _myhub)
+         
+
+        public HomeController(IHubContext<MyHub> _Imyhub)//, BGServiceStarter<MyHubBackgroundService> _starter  )
         {
-            myhub = _myhub;
+
+            //starter = _starter;
+            Imyhub =  _Imyhub;
+            //myhub =(MyHub) _Imyhub;
         }
         public IActionResult Index()
         {
+
+            
+            var usr = "Unknow User";
+            
+            if (HttpContext.User.Identity.IsAuthenticated) usr = HttpContext.User.Identity.Name;
+            string userX = HttpContext.Request.Query["user"];
+            if (usr == "Unknow User" && !string.IsNullOrEmpty(userX) && userX != "undefined" && !userX.Equals("null"))
+            {
+                usr = userX;
+            }
+                Imyhub.Clients.All.SendAsync("RecOnline", usr, DateTime.Now.ToString()).Wait();
+
             return View();
         }
 
-        public IActionResult MyHub(string groupName="GroupMorsal", string userName = "ageeb")
+        public IActionResult MyHubX(string groupName="GroupMorsal", string userName = "ageeb")
         {
             if (string.IsNullOrEmpty(groupName))
             {
@@ -32,12 +53,8 @@ namespace ageebSoft.SignlR.Core.Controllers
             ViewData["GroupName"] = groupName;
             ViewData["userName"] = userName;
 
-            myhub.Clients.All.SendAsync("Send", userName, $"Home page loaded at: {DateTime.Now}").Wait();
-            //myhub.Groups.AddToGroupAsync(myhub.Clie
-            // MyHub HubObj = new MyHub();
-            //  var RequiredId = HubObj..InvokeHubMethod();
-            //var hub = new MyHub();
-            //hub.JoinGroup(groupName).Wait();
+           // myhub.Clients.All.SendAsync("Send", userName, $"Home page loaded at: {DateTime.Now}").Wait();
+            
 
             return View();
         }

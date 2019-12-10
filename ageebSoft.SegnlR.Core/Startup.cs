@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ageebSoft.SignlR.Core.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,10 +34,20 @@ namespace ageebSoft.SignlR.Core
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-            IHubContext<MyHub>
+            //services.AddHostedService<BGServiceStarter<MyHubBackgroundService>>();
+            // services.AddHostedService<MyHubBackgroundService>();
+            //  services.AddHostedService<NotificatioBackgroundService>();
+            //services.AddSingleton<BGServiceStarter<MyHubBackgroundService>>();
+            //IHubContext<MyHub>
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddAuthentication();
+            services.AddAuthorization();
             services.AddSignalR();
+            services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
+
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,9 +66,38 @@ namespace ageebSoft.SignlR.Core
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            app.UseSignalR(routes =>
+            app.UseAuthentication();
+           
+            //app.UseCors(CorsOptions.AllowAll);
+
+            //لعمل محاكاة لمستخدم قام بتسجيل الدخول حتى نجرب العمل
+           
+            app.Use(async (context,next)=>
             {
+                string userName = context.Request.Query["userName"];
+                //string userName2 = context.Request.Body["userName"];
+                //string userName2 = context.Request.Form["userName"];
+                if(!string.IsNullOrEmpty(userName) && userName!= "undefined" && !userName.Equals("null"))
+                {
+                    var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+                    identity.AddClaim(new Claim(ClaimTypes.Name, userName));
+                    identity.AddClaim(new Claim(ClaimTypes.Role, "ChatRole"));
+
+                    if (userName.ToLower().Contains("admin"))
+                    {
+                        identity.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
+                        
+                    }
+                    context.User = new ClaimsPrincipal(identity);
+                }
+                await next();
+            }
+            );
+             app.UseSignalR((routes) =>
+            {
+                
                 routes.MapHub<MyHub>("/MyHub");
+                routes.MapHub<NotificationHub>("/Notifi");
                // routes.MapHub<CalcHub>("/calcHub");
 
             });

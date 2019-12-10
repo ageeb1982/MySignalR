@@ -1,6 +1,20 @@
-﻿"use strict";
+﻿ "use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/Myhub").build();
+ 
+var user = getQueryStringByName("user");
+var connection = new signalR.HubConnectionBuilder().withUrl("/Myhub?userName=" + user).build();
+//$.connection.hub.qs = { userName: user };
+
+
+//$.signalR.ajaxDefaults.headers = { userName: user };
+
+//signalR.ajaxDefaults.headers = new Headers({
+//    'Content-Type': "application/json",
+//   // "Authorization": 'Bearer ' + accessToken  //accessToken contain bearer value.
+//    'userName': user
+//});
+//$.signalR.
+//$.signalR.ajaxDefaults.headers = { Authorization: "basic " + yourToken };
 
 //Disable send button until connection is established
 //document.getElementById("sendButton").disabled = true;
@@ -33,6 +47,7 @@ connection.on("Recgrp", function (user, message) {
 //    return console.error("RecGrp---" + err.toString());
 //});
 
+//connection.on("RecOnline", function (user, message) {
 connection.on("RecOnline", function (user, message) {
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var encodedMsg = user + " :  " + msg;
@@ -62,22 +77,24 @@ connection.start().then(function ()
 });
 
  
-    $("#sendButton").on("click", function (event) {
-        var user = document.getElementById("userInput").value;
-        var message = document.getElementById("msgInput").value;
-        SendMsg(user, message);
-        //connection.invoke("Send", user, message).catch(function (err) {
-        //    return console.error("sendButton----"+err.toString());
-        //});
-        event.preventDefault();
-    });
+$("#sendButton").on("click", function (event) {
+    //var user = document.getElementById("userInput").value;
+    var message = document.getElementById("msgInput").value;
+    SendMsg(message)
+    // SendMsg(user, message);
+    //connection.invoke("Send", user, message).catch(function (err) {
+    //    return console.error("sendButton----"+err.toString());
+    //});
+    event.preventDefault();
+});
  
  
     $("#grpSendButton").on("click", function (event) {
-        var user = document.getElementById("grpuserInput").value;
+        //var user = document.getElementById("grpuserInput").value;
         var message = document.getElementById("grpmsgInput").value;
         var grp = document.getElementById("grpInput").value;
-        SendMsgGroup(grp, user, message);
+        SendMsgGroup(grp, message)
+        //SendMsgGroup(grp, user, message);
         //connection.invoke("SendGroup", grp, user, message).catch(function (err) {
         //    return console.error("SendGroup---" +err.toString());
         //});
@@ -97,18 +114,23 @@ connection.start().then(function ()
 
 
 
-function SendMsgGroup(grp, user, message) {
+//function SendMsgGroup(grp, user, message) {
+function SendMsgGroup(grp, message) {
 
     //var is_element_input = grp.prev().is("input"); //true or false
     //var is_element_input = grp.prev().is("input"); //true or false
     //var is_element_input = message.prev().is("input"); //true or false
 
-    connection.invoke("SendGroup", grp, user, message).catch(function (err) {
+    //connection.invoke("SendGroup", grp, user, message).catch(function (err) {
+    connection.invoke("SendGroup", grp, message).catch(function (err) {
         return console.error("SendGroup---" + err.toString());
     });
 }
-function SendMsg(user, message) {
-    connection.invoke("Send", user, message).catch(function (err) {
+//function SendMsg(user, message) {
+function SendMsg(message) {
+    connection.invoke("Send", message)
+        .catch(function (err) {
+            alert(err.toString());
         return console.error("sendButton----" + err.toString());
     });
 }
@@ -116,8 +138,22 @@ function SendMsg(user, message) {
 function JoinGroup(grp) {
 
     connection.invoke("JoinGroup", grp).catch(function (err) {
+        alert(err.toString());
         return console.error("joinGroup---" + err.toString());
     });
+}
+
+
+
+///getQueryStringFormUrlPage
+function getQueryStringByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
 ///GetConId
@@ -125,4 +161,3 @@ function JoinGroup(grp) {
     .then(function (connectionId) {
         // Send the connectionId to controller
     });*/
-
