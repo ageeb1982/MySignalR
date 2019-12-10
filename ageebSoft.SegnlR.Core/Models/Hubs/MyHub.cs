@@ -13,6 +13,7 @@ namespace ageebSoft.SignlR.Core.Models
     //ToDo:مراجعة الدخول بالجافا في صفحات مشروع datalayer
     public class MyHub : Hub
     {
+        public static string ConnectionString= "workstation id=MORSALdb.mssql.somee.com;packet size=4096;user id=Ageeb_SQLLogin_1;pwd=9wiqgiwu4u;data source=MORSALdb.mssql.somee.com;persist security info=False;initial catalog=MORSALdb";
         public Task SendUser(string user, string message)
         {
             return Clients.User(user).SendAsync("Rec", message);

@@ -42,12 +42,18 @@ namespace ageebSoft.SignlR.Core
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAuthentication();
             services.AddAuthorization();
-            services.AddSignalR();
+
+            SingleAddRedisService(services);
             services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
 
 
 
 
+        }
+
+        public virtual void SingleAddRedisService(IServiceCollection services)
+        {
+            services.AddSignalR().AddRedis(MyHub.ConnectionString);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,14 +99,16 @@ namespace ageebSoft.SignlR.Core
                 await next();
             }
             );
-             app.UseSignalR((routes) =>
+            //app.UseCors("AllowCors");
+            app.UseSignalR((routes) =>
             {
-                
+
                 routes.MapHub<MyHub>("/MyHub");
                 routes.MapHub<NotificationHub>("/Notifi");
-               // routes.MapHub<CalcHub>("/calcHub");
+                // routes.MapHub<CalcHub>("/calcHub");
 
             });
+            
            
             app.UseMvc(routes =>
             {
