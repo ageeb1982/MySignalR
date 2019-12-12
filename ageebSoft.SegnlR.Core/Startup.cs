@@ -104,7 +104,7 @@ namespace ageebSoft.SignlR.Core
                 if (!string.IsNullOrEmpty(userName) && userName != "undefined" && !userName.Equals("null"))
                 {
 
-
+//التأكد
 
                     var mydb = new MyDB();
                     var user = mydb.MyUsers.FirstOrDefault(x => x.UserName==userName);
