@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ageebSoft.SignlR.Core.Models.data;
+using ageebSoft.SignlR.Core.Models.DB;
+using ageebSoft.SignlR.Core.Models.Hubs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -11,12 +15,32 @@ namespace ageebSoft.SignlR.Core.Models
 
     //ToDo:مراجعة الدخول بالجافا اسكربت في صفحات في مشروع adminx
     //ToDo:مراجعة الدخول بالجافا في صفحات مشروع datalayer
-    public class MyHub : Hub
+    public class MyHub : Hub,IMyHub
     {
-        public static string ConnectionString= "workstation id=MORSALdb.mssql.somee.com;packet size=4096;user id=Ageeb_SQLLogin_1;pwd=9wiqgiwu4u;data source=MORSALdb.mssql.somee.com;persist security info=False;initial catalog=MORSALdb";
-        public Task SendUser(string user, string message)
+        private readonly MyDB mydb;
+        private readonly UserManager<MyUser> userManger;
+
+        public MyHub(MyDB _mydb, UserManager<MyUser> _userManger)
+        {
+            mydb = _mydb;
+            userManger = _userManger;
+        }
+        //public static string ConnectionString= "workstation id=MORSALdb.mssql.somee.com;packet size=4096;user id=Ageeb_SQLLogin_1;pwd=9wiqgiwu4u;data source=MORSALdb.mssql.somee.com;persist security info=False;initial catalog=MORSALdb";
+        public static string ConnectionString = "Data Source=.;Initial Catalog=SignalRDB;Integrated Security=True";
+        public Task SendToUser(string user, string message)
         {
             return Clients.User(user).SendAsync("Rec", message);
+        }
+
+
+        public IQueryable<string> GetGroupsOnline()
+        {
+            return mydb.GroupsOnline.Select(x => x.Name);
+        }
+
+        public IQueryable<string> GetUsersOnline()
+        {
+            return mydb.UsersOnline.Select(x => x.Name);
         }
 
         [Authorize(Roles = "ChatRole")]
@@ -62,8 +86,8 @@ namespace ageebSoft.SignlR.Core.Models
                 await Clients.Group(groupName).SendAsync("Send", $"{GetUserName()} has left the group {groupName}.");
             }
         }
-  
-        
+
+
         [Authorize]
         public async Task SendToRecOnline(string msg)
         {
@@ -76,7 +100,7 @@ namespace ageebSoft.SignlR.Core.Models
             await Clients.All.SendAsync("Recgrp", $"{GetUserName()}", msg);
 
         }
-        
+
         [Authorize]
         public async Task SendToRec(string msg)
         {

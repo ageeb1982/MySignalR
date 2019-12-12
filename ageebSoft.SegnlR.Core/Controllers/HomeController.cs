@@ -8,6 +8,10 @@ using ageebSoft.SignlR.Core.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
  using System.Threading;
+using ageebSoft.SignlR.Core.Models.Hubs;
+using Microsoft.AspNetCore.Identity;
+using ageebSoft.SignlR.Core.Models.DB;
+using ageebSoft.SignlR.Core.Models.data;
 
 namespace ageebSoft.SignlR.Core.Controllers
 {
@@ -15,35 +19,61 @@ namespace ageebSoft.SignlR.Core.Controllers
     {
 
         private readonly IHubContext<MyHub> Imyhub;
-        
- 
+         private readonly MyDB mydb;
 
-         
-
-        public HomeController(IHubContext<MyHub> _Imyhub)//, BGServiceStarter<MyHubBackgroundService> _starter  )
+        public HomeController(IHubContext<MyHub> _Imyhub,MyDB _mydb)
         {
+             mydb = _mydb;
+            Imyhub = _Imyhub;
+         }
 
-            //starter = _starter;
-            Imyhub =  _Imyhub;
-            //myhub =(MyHub) _Imyhub;
-        }
-        public IActionResult Index()
+
+          public async Task< IActionResult> Index(string GroupName)
         {
+            var message = mydb.Messages;
 
-            
             var usr = "Unknow User";
+            var GrpName = "A";
+
             
-            if (HttpContext.User.Identity.IsAuthenticated) usr = HttpContext.User.Identity.Name;
             string userX = HttpContext.Request.Query["user"];
+            string GrpNameX = GroupName;
             if (usr == "Unknow User" && !string.IsNullOrEmpty(userX) && userX != "undefined" && !userX.Equals("null"))
             {
                 usr = userX;
+            } 
+            
+            if (GrpName == "A" && !string.IsNullOrEmpty(GrpNameX) && GrpNameX != "undefined" && !GrpNameX.Equals("null"))
+            {
+                GrpName = GrpNameX;
             }
-                Imyhub.Clients.All.SendAsync("RecOnline", usr, DateTime.Now.ToString()).Wait();
+            if (HttpContext.User.Identity.IsAuthenticated) { 
+                usr = HttpContext.User.Identity.Name;
+                var currUser = mydb.MyUsers.FirstOrDefault(x=>x.UserName==usr) ;
+                if(currUser!=null)
+                {
+                      
+                }
+                
+            }
 
-            return View();
+          var res = message.Where(x => x.GroupName == GrpName).ToList();
+            //Imyhub.Clients.All.SendToRecOnline( DateTime.Now.ToString()).Wait();
+            // Imyhub.Clients.All.Send("");
+             
+
+            ViewData["UserName"] = usr;
+            ViewData["GrpName"] = GrpName;
+
+            if (res==null)
+            {
+                res = new List<Message>();
+            }
+
+            return View(res);
         }
 
+         
         public IActionResult MyHubX(string groupName="GroupMorsal", string userName = "ageeb")
         {
             if (string.IsNullOrEmpty(groupName))
@@ -63,9 +93,9 @@ namespace ageebSoft.SignlR.Core.Controllers
 
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
+             
 
-            return View();
+            return View(mydb.Messages);
         }
 
         public IActionResult WithOutProxy()
@@ -78,5 +108,9 @@ namespace ageebSoft.SignlR.Core.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+    }
+
+    internal class HubMethods
+    {
     }
 }
