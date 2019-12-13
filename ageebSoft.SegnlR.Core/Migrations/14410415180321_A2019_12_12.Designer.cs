@@ -10,14 +10,14 @@ using ageebSoft.SignlR.Core.Models.data;
 namespace ageebSoft.SignlR.Core.Migrations
 {
     [DbContext(typeof(MyDB))]
-    [Migration("20191212110830_A2019_12_12")]
+    [Migration("14410415180321_A2019_12_12")]
     partial class A2019_12_12
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 

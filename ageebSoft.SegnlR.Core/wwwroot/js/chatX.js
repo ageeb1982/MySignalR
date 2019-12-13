@@ -1,7 +1,4 @@
-﻿"use strict";
-
-
-
+﻿ "use strict";
 
  
 var user = getQueryStringByName("user");
@@ -35,7 +32,7 @@ connection.on("Rec", function (user, message) {
     var li = document.createElement("li");
     li.textContent = encodedMsg;
     document.getElementById("msgList").appendChild(li);
- });
+});
 //    .catch(function (err) {
 //    return console.error("Rec---" + err.toString());
 //});
@@ -144,8 +141,6 @@ function JoinGroup(grp) {
         alert(err.toString());
         return console.error("joinGroup---" + err.toString());
     });
-
-    
 }
 
 

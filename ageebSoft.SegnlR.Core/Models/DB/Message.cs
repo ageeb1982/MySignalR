@@ -1,16 +1,15 @@
 ﻿
- using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace ageebSoft.SignlR.Core.Models.DB
 {
-   
+
     public class Message : MainClass
     {
-       
+
         public string GroupName { set; get; }
         /// <summary>
         /// نص رسالة الطلب
@@ -19,8 +18,8 @@ namespace ageebSoft.SignlR.Core.Models.DB
         [Required(ErrorMessage = "ادخل نص الرسالة")]
         public string Msg { set; get; }
 
-  
-         
+
+
 
         /// <summary>
         /// تسلسلي المرسل
@@ -36,8 +35,8 @@ namespace ageebSoft.SignlR.Core.Models.DB
         [Display(Name = "وقت الإرسال")]
         public DateTime Time { set; get; }
 
-        
-         
+
+
 
     }
 

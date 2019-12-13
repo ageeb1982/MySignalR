@@ -8,10 +8,9 @@ using ageebSoft.SignlR.Core.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
  using System.Threading;
-using ageebSoft.SignlR.Core.Models.Hubs;
-using Microsoft.AspNetCore.Identity;
 using ageebSoft.SignlR.Core.Models.DB;
 using ageebSoft.SignlR.Core.Models.data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ageebSoft.SignlR.Core.Controllers
 {
@@ -19,53 +18,82 @@ namespace ageebSoft.SignlR.Core.Controllers
     {
 
         private readonly IHubContext<MyHub> Imyhub;
-         private readonly MyDB mydb;
+        
+ 
 
-        public HomeController(IHubContext<MyHub> _Imyhub,MyDB _mydb)
+         
+
+        public HomeController(IHubContext<MyHub> _Imyhub)//, BGServiceStarter<MyHubBackgroundService> _starter  )
         {
-             mydb = _mydb;
-            Imyhub = _Imyhub;
-         }
 
-
-          public async Task< IActionResult> Index(string GroupName)
+            //starter = _starter;
+            Imyhub =  _Imyhub;
+            //myhub =(MyHub) _Imyhub;
+        }
+        public async Task<IActionResult> Index()
         {
-            var message = mydb.Messages;
+            var mydb = new MyDB();
+            var message = new List<Message>();
+
+            try
+            {
+                message =await mydb.Messages.ToListAsync();
+            }
+            catch
+            { }
+
 
             var usr = "Unknow User";
-            var GrpName = "A";
-
             
+            if (HttpContext.User.Identity.IsAuthenticated) usr = HttpContext.User.Identity.Name;
             string userX = HttpContext.Request.Query["user"];
-            string GrpNameX = GroupName;
+            string GrpNameX = "room";// HttpContext.Request.Query["Group"];
+
             if (usr == "Unknow User" && !string.IsNullOrEmpty(userX) && userX != "undefined" && !userX.Equals("null"))
             {
                 usr = userX;
-            } 
-            
+            }
+                Imyhub.Clients.All.SendAsync("RecOnline", usr, DateTime.Now.ToString()).Wait();
+            var GrpName = "A";
+
+
             if (GrpName == "A" && !string.IsNullOrEmpty(GrpNameX) && GrpNameX != "undefined" && !GrpNameX.Equals("null"))
             {
                 GrpName = GrpNameX;
             }
-            if (HttpContext.User.Identity.IsAuthenticated) { 
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
                 usr = HttpContext.User.Identity.Name;
-                var currUser = mydb.MyUsers.FirstOrDefault(x=>x.UserName==usr) ;
-                if(currUser!=null)
+                var currUser = mydb.MyUsers.FirstOrDefault(x => x.UserName == usr);
+                if (currUser != null)
                 {
-                      
+
                 }
-                
+
             }
 
-          var res = message.Where(x => x.GroupName == GrpName).ToList();
+            var res = new List<Message>();
             //Imyhub.Clients.All.SendToRecOnline( DateTime.Now.ToString()).Wait();
             // Imyhub.Clients.All.Send("");
-             
+            try
+            {
+                if (message.Count() != 0)
+                {
+
+                    var msg = message.Where(x => x.GroupName == GrpName);
+                    if (msg.Count() != 0) res = msg.ToList();
+
+                }
+            }
+            catch
+            {
+
+            }
 
             ViewData["UserName"] = usr;
             ViewData["GrpName"] = GrpName;
 
-            if (res==null)
+            if (res == null)
             {
                 res = new List<Message>();
             }
@@ -73,7 +101,6 @@ namespace ageebSoft.SignlR.Core.Controllers
             return View(res);
         }
 
-         
         public IActionResult MyHubX(string groupName="GroupMorsal", string userName = "ageeb")
         {
             if (string.IsNullOrEmpty(groupName))
@@ -93,9 +120,9 @@ namespace ageebSoft.SignlR.Core.Controllers
 
         public IActionResult Contact()
         {
-             
+            ViewData["Message"] = "Your contact page.";
 
-            return View(mydb.Messages);
+            return View();
         }
 
         public IActionResult WithOutProxy()
@@ -108,9 +135,5 @@ namespace ageebSoft.SignlR.Core.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-    }
-
-    internal class HubMethods
-    {
     }
 }

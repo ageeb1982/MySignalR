@@ -1,8 +1,6 @@
 ﻿using ageebSoft.SignlR.Core.Models.data;
 using ageebSoft.SignlR.Core.Models.DB;
-using ageebSoft.SignlR.Core.Models.Hubs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -15,32 +13,15 @@ namespace ageebSoft.SignlR.Core.Models
 
     //ToDo:مراجعة الدخول بالجافا اسكربت في صفحات في مشروع adminx
     //ToDo:مراجعة الدخول بالجافا في صفحات مشروع datalayer
-    public class MyHub : Hub,IMyHub
+    public class MyHub : Hub
     {
-        private readonly MyDB mydb;
-        private readonly UserManager<MyUser> userManger;
 
-        public MyHub(MyDB _mydb, UserManager<MyUser> _userManger)
-        {
-            mydb = _mydb;
-            userManger = _userManger;
-        }
-        //public static string ConnectionString= "workstation id=MORSALdb.mssql.somee.com;packet size=4096;user id=Ageeb_SQLLogin_1;pwd=9wiqgiwu4u;data source=MORSALdb.mssql.somee.com;persist security info=False;initial catalog=MORSALdb";
-        public static string ConnectionString = "Data Source=.;Initial Catalog=SignalRDB;Integrated Security=True";
-        public Task SendToUser(string user, string message)
+
+
+        MyDB mydb;
+        public Task SendUser(string user, string message)
         {
             return Clients.User(user).SendAsync("Rec", message);
-        }
-
-
-        public IQueryable<string> GetGroupsOnline()
-        {
-            return mydb.GroupsOnline.Select(x => x.Name);
-        }
-
-        public IQueryable<string> GetUsersOnline()
-        {
-            return mydb.UsersOnline.Select(x => x.Name);
         }
 
         [Authorize(Roles = "ChatRole")]
@@ -68,6 +49,23 @@ namespace ageebSoft.SignlR.Core.Models
         {
             if (Context.User.Identity.IsAuthenticated)
             {
+                try
+                {
+                    mydb = new MyDB();
+                    var IsAdd = false;
+                    var group = mydb.GroupsOnline.FirstOrDefault(x => x.GroupName.Equals(GroupName, StringComparison.OrdinalIgnoreCase));
+                    group = IsGroupExistOrCrate(GroupName, group);
+                    var userName = Context.User.Identity.Name;
+                   var User= IsUserExistOrCrate(userName);
+
+                    //if (IsAdd) mydb.SaveChanges();
+
+                  //ToDo:  mydb.gr
+
+
+                }
+                catch { }
+
                 await Groups.AddToGroupAsync(Context.ConnectionId, GroupName);
 
 
@@ -75,6 +73,33 @@ namespace ageebSoft.SignlR.Core.Models
             }
             //Clients.Group(GroupName).SendAsync("RecOnline", $"{Context.ConnectionId}", "Join Group : " + GroupName).Wait();
         }
+
+        private MyUser IsUserExistOrCrate(string userName)
+        {
+            if (mydb == null) mydb = new MyDB();
+            var currUser = mydb.MyUsers.FirstOrDefault(x => x.UserName == userName);
+            if (currUser == null)
+            {
+                currUser = new MyUser { UserName = userName };
+                mydb.MyUsers.Add(currUser);
+                mydb.SaveChanges();
+            }
+            return currUser;
+        }
+
+        private GroupsOnline IsGroupExistOrCrate(string GroupName, GroupsOnline group)
+        {
+            if (mydb == null) mydb = new MyDB();
+            if (group == null)
+            {
+                group = new GroupsOnline { GroupName = GroupName };
+                mydb.GroupsOnline.Add(group);
+                mydb.SaveChanges();
+            }
+
+            return group;
+        }
+
         [Authorize(Roles = "Admin")]
         public async Task RemoveFromGroup(string groupName)
         {
@@ -86,8 +111,8 @@ namespace ageebSoft.SignlR.Core.Models
                 await Clients.Group(groupName).SendAsync("Send", $"{GetUserName()} has left the group {groupName}.");
             }
         }
-
-
+  
+        
         [Authorize]
         public async Task SendToRecOnline(string msg)
         {
@@ -100,7 +125,7 @@ namespace ageebSoft.SignlR.Core.Models
             await Clients.All.SendAsync("Recgrp", $"{GetUserName()}", msg);
 
         }
-
+        
         [Authorize]
         public async Task SendToRec(string msg)
         {
