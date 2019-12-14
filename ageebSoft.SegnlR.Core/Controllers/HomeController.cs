@@ -53,7 +53,7 @@ namespace ageebSoft.SignlR.Core.Controllers
             {
                 usr = userX;
             }
-                Imyhub.Clients.All.SendAsync("RecOnline", usr, DateTime.Now.ToString()).Wait();
+             //   Imyhub.Clients.All.SendAsync("RecOnline", usr, DateTime.Now.ToString()).Wait();
             var GrpName = "A";
 
 

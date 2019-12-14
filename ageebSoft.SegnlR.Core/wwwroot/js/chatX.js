@@ -55,9 +55,37 @@ connection.on("RecOnline", function (user, message) {
     li.textContent = encodedMsg;
     document.getElementById("OnlineList").appendChild(li);
 });
-//    .catch(function (err) {
-//    return console.error("RecOnline---" + err.toString());
-//});
+
+connection.on("GroupsOnline", function (list) {
+    $("#GroupOnlineList").empty();
+    var myData = JSON.parse(list);
+    $.each(myData, function ()
+    {
+       // $.each(this, function (name, value) {
+
+        var encodedMsg = '<input type="button" onclick=JGroup("' + this.groupName + '") class="GroupX" value="join Group ' + this.groupName + " : Count " + this.Count + '" />';
+            var li = document.createElement("li");
+            li.innerHTML = encodedMsg;
+            document.getElementById("GroupOnlineList").appendChild(li);
+
+          //  console.log(name + '=' + value);
+       // });
+    });
+
+});
+
+//$(".GroupX").click(function()
+function JGroup(grp) {
+
+    
+   // alert("  ---  ");
+  //  var txt = grpName;
+   // var grp = txt[0].trim();
+   // grp = grp.replace("join Group", "");
+    $("#grpInput").val(grp);
+    JoinGroup(grp);
+
+} 
 
 connection.start().then(function ()
 {
@@ -110,7 +138,8 @@ $("#sendButton").on("click", function (event) {
         //});
         event.preventDefault();
     });
- 
+
+
 
 
 

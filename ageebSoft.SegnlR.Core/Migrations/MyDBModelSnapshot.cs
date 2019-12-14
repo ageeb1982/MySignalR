@@ -15,7 +15,7 @@ namespace ageebSoft.SignlR.Core.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
+                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -26,13 +26,35 @@ namespace ageebSoft.SignlR.Core.Migrations
 
                     b.Property<DateTime?>("Date1");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("GroupName");
 
                     b.Property<string>("Note");
 
                     b.HasKey("Id");
 
                     b.ToTable("GroupsOnline");
+                });
+
+            modelBuilder.Entity("ageebSoft.SignlR.Core.Models.data.UsersGroupsOnline", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("Date1");
+
+                    b.Property<Guid>("GroupsOnlineId");
+
+                    b.Property<Guid>("MyUserId");
+
+                    b.Property<string>("Note");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupsOnlineId");
+
+                    b.HasIndex("MyUserId");
+
+                    b.ToTable("UsersGroupsOnline");
                 });
 
             modelBuilder.Entity("ageebSoft.SignlR.Core.Models.data.UsersOnline", b =>
@@ -90,6 +112,19 @@ namespace ageebSoft.SignlR.Core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MyUsers");
+                });
+
+            modelBuilder.Entity("ageebSoft.SignlR.Core.Models.data.UsersGroupsOnline", b =>
+                {
+                    b.HasOne("ageebSoft.SignlR.Core.Models.data.GroupsOnline", "GroupsOnline")
+                        .WithMany("UsersGroupsOnlines")
+                        .HasForeignKey("GroupsOnlineId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ageebSoft.SignlR.Core.Models.DB.MyUser", "MyUser")
+                        .WithMany("UsersGroupsOnlines")
+                        .HasForeignKey("MyUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("ageebSoft.SignlR.Core.Models.DB.Message", b =>

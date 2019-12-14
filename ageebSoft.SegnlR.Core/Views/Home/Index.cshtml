@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<ageebSoft.SignlR.Core.Models.DB.Message>
-
+     
 <div class="container col-6">
     <div class="row">&nbsp;</div>
     <div class="row">
@@ -37,7 +37,7 @@
         <div class="col-6">&nbsp;</div>
         <div class="col-6">
             Group..........<input type="text" value="GroupA" id="grpInput" />
-            <input type="button" id="btnjoinGroup" value="join Group" />
+            <input type="button" id="btnjoinGroup" value="join Group"  />
             <br />
             <br />
             User..........<b class="userName"></b>
@@ -68,7 +68,15 @@
         </div>
     </div>
 </div>
-
+<div class="container col-6">
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        <div class="col-6">
+            <ul id="GroupOnlineList"></ul>
+        </div>
+    </div>
+</div>
 
 <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -77,6 +85,9 @@
     $(() => {
         var userNameX = getQueryStringByName("user");
         $(".userName").text(userNameX);
+
+       
+        
     });
 
 </script>
