@@ -1,5 +1,3 @@
-using System;
-
 namespace ageebSoft.SignalR.Client.Models
 {
     public class ErrorViewModel

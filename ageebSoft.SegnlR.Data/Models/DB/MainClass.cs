@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ageebSoft.SignlR.Core.Models.DB
+namespace ageebSoft.SignlR.Web.Models.DB
 {
     public class MainClass
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ageebSoft.SignlR.Core.Migrations
+namespace ageebSoft.SignlR.Web.Migrations
 {
     public partial class A2019_12_14 : Migration
     {

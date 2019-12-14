@@ -7,7 +7,7 @@
 
 //namespace ageebSoft.SignlR.Core.Models.BackgroudService
 //{
-    
+
 //    public class BGServiceStarter<T> : IHostedService
 //    where T : IHostedService
 //    {

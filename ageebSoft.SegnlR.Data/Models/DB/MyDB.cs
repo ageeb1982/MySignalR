@@ -1,7 +1,7 @@
-﻿using ageebSoft.SignlR.Core.Models.DB;
+﻿using ageebSoft.SignlR.Web.Models.DB;
 using Microsoft.EntityFrameworkCore;
 
-namespace ageebSoft.SignlR.Core.Models.data
+namespace ageebSoft.SignlR.Web.Models.data
 {
     public class MyDB : DbContext
     {

@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ageebSoft.SegnlR.Core\ageebSoft.SignlR.Core.csproj" />
     <ProjectReference Include="..\ageebSoft.SegnlR.Data\ageebSoft.SignlR.Data.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,4 @@
-using System;
-
-namespace ageebSoft.SignlR.Core.Models
+namespace ageebSoft.SignlR.Web.Models
 {
     public class ErrorViewModel
     {

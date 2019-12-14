@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using ageebSoft.SignlR.Core.Models.data;
-using ageebSoft.SignlR.Core.Models.DB;
+using ageebSoft.SignlR.Web.Models.data;
+using ageebSoft.SignlR.Web.Models.DB;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +24,7 @@ namespace ageebSoft.SignlR.Core.Models
         }
 
         #region ToAllUser
-         public async Task Send(string msg)
+        public async Task Send(string msg)
         {
             await Clients.All.SendAsync("Rec", $"{GetUserName()}", msg);
             await getGroupOnline();
@@ -53,7 +53,7 @@ namespace ageebSoft.SignlR.Core.Models
         #endregion
 
         #region GroupSection
-         public async Task SendGroup(string GroupName, string msg)
+        public async Task SendGroup(string GroupName, string msg)
         {
             await Clients.Group(GroupName).SendAsync("Recgrp", $"{GetUserName()}", msg);
             await getGroupOnline();

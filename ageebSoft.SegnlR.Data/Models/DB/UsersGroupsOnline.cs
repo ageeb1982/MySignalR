@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using ageebSoft.SignlR.Core.Models.DB;
+using ageebSoft.SignlR.Web.Models.DB;
 
-namespace ageebSoft.SignlR.Core.Models.data
+namespace ageebSoft.SignlR.Web.Models.data
 {
     public class UsersGroupsOnline : MainClass
     {

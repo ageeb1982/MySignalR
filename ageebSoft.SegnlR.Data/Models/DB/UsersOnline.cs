@@ -1,4 +1,4 @@
-﻿namespace ageebSoft.SignlR.Core.Models.data
+﻿namespace ageebSoft.SignlR.Web.Models.data
 {
     public class UsersOnline : IdName
     {

@@ -1,33 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using ageebSoft.SignlR.Core.Models;
+using ageebSoft.SignlR.Web.Models;
+using ageebSoft.SignlR.Web.Models.data;
+using ageebSoft.SignlR.Web.Models.DB;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Hosting;
- using System.Threading;
-using ageebSoft.SignlR.Core.Models.DB;
-using ageebSoft.SignlR.Core.Models.data;
 using Microsoft.EntityFrameworkCore;
 
-namespace ageebSoft.SignlR.Core.Controllers
+namespace ageebSoft.SignlR.Web.Controllers
 {
     public class HomeController : Controller
     {
 
         private readonly IHubContext<MyHub> Imyhub;
-        
- 
 
-         
+
+
+
 
         public HomeController(IHubContext<MyHub> _Imyhub)//, BGServiceStarter<MyHubBackgroundService> _starter  )
         {
 
             //starter = _starter;
-            Imyhub =  _Imyhub;
+            Imyhub = _Imyhub;
             //myhub =(MyHub) _Imyhub;
         }
         public async Task<IActionResult> Index()
@@ -37,14 +35,14 @@ namespace ageebSoft.SignlR.Core.Controllers
 
             try
             {
-                message =await mydb.Messages.ToListAsync();
+                message = await mydb.Messages.ToListAsync();
             }
             catch
             { }
 
 
             var usr = "Unknow User";
-            
+
             if (HttpContext.User.Identity.IsAuthenticated) usr = HttpContext.User.Identity.Name;
             string userX = HttpContext.Request.Query["user"];
             string GrpNameX = "room";// HttpContext.Request.Query["Group"];
@@ -53,7 +51,7 @@ namespace ageebSoft.SignlR.Core.Controllers
             {
                 usr = userX;
             }
-             //   Imyhub.Clients.All.SendAsync("RecOnline", usr, DateTime.Now.ToString()).Wait();
+            //   Imyhub.Clients.All.SendAsync("RecOnline", usr, DateTime.Now.ToString()).Wait();
             var GrpName = "A";
 
 
@@ -101,7 +99,7 @@ namespace ageebSoft.SignlR.Core.Controllers
             return View(res);
         }
 
-        public IActionResult MyHubX(string groupName="GroupMorsal", string userName = "ageeb")
+        public IActionResult MyHubX(string groupName = "GroupMorsal", string userName = "ageeb")
         {
             if (string.IsNullOrEmpty(groupName))
             {
@@ -110,13 +108,13 @@ namespace ageebSoft.SignlR.Core.Controllers
             ViewData["GroupName"] = groupName;
             ViewData["userName"] = userName;
 
-           // myhub.Clients.All.SendAsync("Send", userName, $"Home page loaded at: {DateTime.Now}").Wait();
-            
+            // myhub.Clients.All.SendAsync("Send", userName, $"Home page loaded at: {DateTime.Now}").Wait();
+
 
             return View();
         }
-        
-       
+
+
 
         public IActionResult Contact()
         {

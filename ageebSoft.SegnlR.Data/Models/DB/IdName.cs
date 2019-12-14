@@ -1,6 +1,6 @@
-﻿using ageebSoft.SignlR.Core.Models.DB;
+﻿using ageebSoft.SignlR.Web.Models.DB;
 
-namespace ageebSoft.SignlR.Core.Models
+namespace ageebSoft.SignlR.Web.Models
 {
     public class IdName : MainClass
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using ageebSoft.SignlR.Core.Models.data;
+using ageebSoft.SignlR.Web.Models.data;
 
-namespace ageebSoft.SignlR.Core.Models.DB
+namespace ageebSoft.SignlR.Web.Models.DB
 {
     public class MyUser : MainClass
     {
